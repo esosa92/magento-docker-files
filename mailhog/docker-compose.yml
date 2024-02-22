@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+    mailhog:
+        container_name: mailhog
+        image: mailhog/mailhog:latest
+        restart: unless-stopped
+        ports:
+            - "8025:8025"
+        networks:
+            - reverse-proxy-apache_default
+networks:
+    reverse-proxy-apache_default:
+        external: true

@@ -1,0 +1,4 @@
+Host __host__
+  Hostname __host_ip_address_or_dns
+  Port __port__
+  User __user__

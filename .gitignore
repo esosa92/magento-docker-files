@@ -1,0 +1,16 @@
+reverse-proxy/my-vhosts.conf
+proxy-manager/data
+proxy-manager/letsencrypt
+.idea
+_build_logs/
+reverse-proxy-apache/my-vhost.conf
+portainer/portainer-data
+database-compose/mariadb10.4/data
+database-compose/mariadb10.4/dbscripts
+database-compose/mariadb10.4/.env
+database-compose/mariadb10.4/shell-tools
+shell-tools/build_logs
+database-compose/mariadb10.4/conf
+shell-tools/tmp
+sample-env/conf
+docker-stacks

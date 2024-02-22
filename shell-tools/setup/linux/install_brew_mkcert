@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+if [ ! -d "/home/linuxbrew/.linuxbrew" ]; then
+  echo "⚡️ Starting brew installation, please be patient"
+  echo "in 3..."
+  sleep 1
+  echo "in 2..."
+  sleep 1
+  echo "in 1..."
+  sleep 1
+  sudo apt install -y libnss3-tools build-essential procps curl file git
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  echo "⚡️ Installing brew dependencies and mkcert"
+  echo "in 2..."
+  sleep 1
+  echo "in 1..."
+  sleep 1
+  brew install gcc
+  brew install mkcert
+  mkcert -install
+else
+  echo "Brew is installed, skipping..."
+fi

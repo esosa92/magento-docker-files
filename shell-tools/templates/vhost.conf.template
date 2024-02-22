@@ -1,0 +1,12 @@
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    ServerName __domain__
+    ServerAlias __domain__
+    ProxyRequests Off
+    <Proxy *>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+    ProxyPreservehost on
+    ProxyPass / http://__service_name__:80/
+</VirtualHost>

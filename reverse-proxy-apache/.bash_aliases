@@ -1,0 +1,1 @@
+alias reloadcfg='apachectl configtest && apachectl -t'

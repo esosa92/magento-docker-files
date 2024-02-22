@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+brew install gnu-sed
+echo "PATH=$(brew --prefix)/bin/gnubin:\$PATH" >>"$HOME/.bashrc"
+source "$HOME/.bashrc"

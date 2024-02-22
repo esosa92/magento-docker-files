@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+execute=$1
+repo_root=$(dirname $(realpath -s "$0"))
+shell_tools_dir="$repo_root/shell-tools"
+setup_dir="$shell_tools_dir/setup"
+
+export DOCKER_FILES_REPO_ROOT="$repo_root"
+export DOCKER_STACKS_PATH="$repo_root/docker-stacks"
+export DOCKER_FILES_SHELL_TOOLS_DIR="$repo_root/shell-tools"
+export DOCKER_FILES_SETUP_DIR="$DOCKER_FILES_SHELL_TOOLS_DIR/setup"
+export DOCKER_FILES_TEMPLATES_DIR="$DOCKER_FILES_SHELL_TOOLS_DIR/templates"
+export DOCKER_FILES_COMMON_FUNCTIONS="$DOCKER_FILES_SHELL_TOOLS_DIR/common/functions"
+export FZF_DEFAULT_OPTS='--height 50% --layout=reverse --border'
+
+if [ "$execute" = "setup" ]; then
+  sudo -v
+  bash "$setup_dir/setup" "$repo_root"
+fi
+
+if [ "$execute" = "build" ]; then
+  sudo -v
+  bash "$shell_tools_dir/build/common_build" "$repo_root"
+fi
+
+if [ "$execute" = "start" ]; then
+  bash "$shell_tools_dir/start" "$repo_root"
+fi
+
+if [ "$execute" = "stop" ]; then
+  bash "$shell_tools_dir/stop" "$repo_root"
+fi
+
+if [ "$execute" = "create-env" ]; then
+  bash "$shell_tools_dir/env/generate_env" "$repo_root"
+fi
+
+if [ "$execute" = "add-vhost" ]; then
+  bash "$shell_tools_dir/env/ask_add_vhost" "$repo_root"
+fi
+
+if [ "$execute" = "add-host" ]; then
+  bash "$shell_tools_dir/env/add_host" "$repo_root"
+fi
+
+if [ "$execute" = "remove-host" ]; then
+  bash "$shell_tools_dir/env/remove_host" "$repo_root"
+fi
+
+if [ "$execute" = "add-ssh-config" ]; then
+  bash "$shell_tools_dir/ssh/ask_ssh_config" "$repo_root"
+fi
+
+if [ "$execute" = "add-pub-key" ]; then
+  bash "$shell_tools_dir/ssh/add_pub_key_to_remote" "$repo_root"
+fi
+
+if [ "$execute" = "menu" ]; then
+  bash "$shell_tools_dir/menus/entry" "$repo_root"
+fi
+
+if [ "$execute" = "docker-connect" ]; then
+  bash "$shell_tools_dir/docker_connect" "$repo_root"
+fi

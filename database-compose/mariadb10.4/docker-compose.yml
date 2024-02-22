@@ -1,0 +1,18 @@
+version: "3"
+services:
+    mariadb_104:
+        image: mariadb-custom:10.4
+        container_name: mariadb_104
+        environment:
+            MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD:-root} #inside the .env file you can define the root password, by default is root
+        volumes:
+            - ./data/mysql:/var/lib/mysql
+            - ./dbscripts:/dbscripts
+              #     - ./conf/my.cof:/etc/mysql/my.cnf
+        networks:
+            - reverse-proxy-apache_default
+        ports:
+            - "${HOST_PORT_BINDING}:3306"
+networks:
+    reverse-proxy-apache_default:
+        external: true

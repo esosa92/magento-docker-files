@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+current_dir="$repo_root/shell-tools/env"
+reverse_proxy_apache_path="$repo_root/reverse-proxy-apache"
+docker_stacks_path="$repo_root/docker-stacks"
+
+read -er -p "Enter a project stack name: " project_name
+
+if [ -z "$project_name" ]; then
+  echo "Please enter a project name, aborting"
+  exit 0
+fi
+
+project_stack_dir="$docker_stacks_path/$project_name"
+echo "Project stack files will reside in: $project_stack_dir"
+
+if [ -d "$project_stack_dir" ]; then
+  echo "The directory $project_stack_dir already exists, please change the project stack name"
+  exit 0
+fi
+
+read -er -p "Please enter an absolute path to the magento2 project git repo: " git_repo_path
+
+if [ -z "$git_repo_path" ]; then
+  echo "enter a git repo path, aborting"
+  exit 0
+fi
+
+if [ ! -d "$git_repo_path" ]; then
+  echo "git repo path is not a directory, aborting"
+  exit 0
+fi
+
+read -r -p "Please enter port to map from host to DB container for DB access: " host_port
+if [ -z "$host_port" ]; then
+  echo "enter a port, aborting"
+  exit 0
+fi
+
+bash "$current_dir/replace_tmp_sample_env" "$repo_root" "$project_name" "$git_repo_path" "$host_port"
+bash "$current_dir/copy_tmp_to_destination" "$repo_root" "$project_stack_dir" "$git_repo_path"
+
+read -r -p "Do you want to start the containers y/n?[n]: " answer
+answer=${answer:-n}
+if [ "$answer" = "y" ]; then
+  make -C "$project_stack_dir" --no-print-directory run
+fi
+make -C "$reverse_proxy_apache_path" --no-print-directory restart
+echo "A sample env.php was generated, inside the project stack folder. It was copied to git_repo/app/etc/." \
+  "Remember to change the crypt key if you want to use any encrypted info for the project, like users and customers passwords."

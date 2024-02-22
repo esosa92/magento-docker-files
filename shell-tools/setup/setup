@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+current_dir=$(dirname $(realpath -s "$0"))
+
+bash "$current_dir/deps" "$repo_root"
+bash "$current_dir/database_compose" "$repo_root"
+bash "$current_dir/sample_env" "$repo_root"
+bash "$current_dir/reverse_proxy" "$repo_root"
+bash "$current_dir/generate_certs" "$repo_root"

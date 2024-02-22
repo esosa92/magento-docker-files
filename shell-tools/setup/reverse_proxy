@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+cp -n "$repo_root/shell-tools/templates/my-vhost.conf.template" \
+      "$repo_root/reverse-proxy-apache/my-vhost.conf"

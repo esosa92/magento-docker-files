@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+    reverse_proxy:
+        image: httpd:2.4
+        container_name: reverse_proxy_apache
+        volumes:
+            - ./my-httpd.conf:/usr/local/apache2/conf/httpd.conf
+            - ./my-vhost.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+            - ./onep-vhost.conf:/usr/local/apache2/conf/extra/onep-vhosts.conf
+            - ./certs:/usr/local/apache2/conf/certs
+            - ./mySsl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf
+            - ./restart.sh:/restart.sh
+        restart: unless-stopped
+        ports:
+            - "80:80"
+            - "443:443"

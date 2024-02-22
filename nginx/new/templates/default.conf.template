@@ -1,0 +1,28 @@
+upstream fastcgi_backend {
+  server ${PHP_SERVICE_NAME}:${PHP_SERVICE_PORT};
+}
+
+upstream fastcgi_backend_xdebug {
+ server ${PHP_SERVICE_NAME}_xdebug:${PHP_SERVICE_PORT};
+}
+
+map $cookie_xdebug_session $backend_php {
+    default fastcgi_backend;
+    "XDEBUG_ECLIPSE" fastcgi_backend_xdebug;  # Change "new_value" to the cookie value that triggers the new upstream.
+}
+
+server {
+  listen 80;
+  listen 443;
+  server_name ${WEB_ALIAS_DOMAIN} www.${WEB_ALIAS_DOMAIN};
+  set $MAGE_ROOT ${M2_ROOT_FOLDER};
+  set $MAGE_MODE ${RUN_MODE};
+  set $MAGE_RUN_TYPE ${RUN_TYPE};
+  set $MAGE_RUN_CODE ${RUN_CODE};
+
+  include /magento/nginx.magento.conf;
+  client_max_body_size 100M;
+
+  error_log /var/log/nginx/error.log;
+  access_log /var/log/nginx/access.log;
+}

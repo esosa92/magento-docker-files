@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+shell_tools_dir="$repo_root/shell-tools"
+menus_dir="$shell_tools_dir/menus"
+
+# shellcheck source=./functions
+source "$menus_dir/functions"
+selected_menu=""
+while [ "$selected_menu" != "exit" ]; do
+  selected_menu=$(show_main_menu)
+  selected_command=$selected_menu
+  if [[ "$selected_menu" =~ ^(ssh|env|containers)$ ]]; then
+    selected_submenu=$(fzf <"$menus_dir/menu_$selected_menu.txt" | awk '{print $2}')
+    while [ "$selected_submenu" != "back" ]; do
+      run_command "$repo_root" "$selected_submenu"
+      selected_submenu=$(fzf <"$menus_dir/menu_$selected_menu.txt" | awk '{print $2}')
+    done
+  elif [ "$selected_menu" != "exit" ];then
+    run_command "$repo_root" "$selected_command"
+  fi
+done

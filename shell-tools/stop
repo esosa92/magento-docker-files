@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+make -C "$repo_root/reverse-proxy-apache" stop --no-print-directory
+make -C "$repo_root/mailhog" stop --no-print-directory

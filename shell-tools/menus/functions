@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+show_main_menu() {
+  local selected=$(fzf <"$menus_dir/main_menu.txt" | awk '{print $2}')
+  echo "$selected"
+}
+
+run_command() {
+  local repo_root=$1
+  local command_to_run=$2
+  case "$command_to_run" in
+  "setup")
+    make -C "$repo_root" setup --no-print-directory
+    ;;
+  "build")
+    make -C "$repo_root" build --no-print-directory
+    ;;
+  "start")
+    echo "$command_to_run"
+    make -C "$repo_root" start --no-print-directory
+    ;;
+  "stop")
+    echo "$command_to_run"
+    make -C "$repo_root" stop --no-print-directory
+    ;;
+  "create-env")
+    echo "$command_to_run"
+    make -C "$repo_root" create-env --no-print-directory
+    ;;
+  "add-vhost")
+    echo "$command_to_run"
+    make -C "$repo_root" add-vhost --no-print-directory
+    ;;
+  "add-host")
+    make -C "$repo_root" add-host --no-print-directory
+    ;;
+  "remove-host")
+    echo "$command_to_run"
+    make -C "$repo_root" remove-vhost --no-print-directory
+    ;;
+  "add-ssh-config")
+    echo "$command_to_run"
+    make -C "$repo_root" add-ssh-config --no-print-directory
+    ;;
+  "add-pub-key")
+    make -C "$repo_root" add-pubkey --no-print-directory
+    ;;
+  "docker-connect")
+    make -C "$repo_root" docker-connect --no-print-directory
+    ;;
+  *)
+    echo "command not found"
+    ;;
+  esac
+}

@@ -1,0 +1,32 @@
+#virtual hosts
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    ServerName portainer.local.com
+    ProxyRequests Off
+    Timeout 36500000
+    ProxyTimeout 36500000
+    # allow for upgrading to websockets
+    RewriteEngine On
+    RewriteCond %{HTTP:Upgrade} =websocket [NC]
+    RewriteRule ^/?(.*) ws://portainer:9000/$1 [P,L]
+    RewriteCond %{HTTP:Upgrade} !=websocket [NC]
+    RewriteRule ^/(.*)           http://portainer:9000/$1 [P,L]
+    <Proxy *>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+    ProxyPreservehost on
+    ProxyPass / http://portainer:9000/ timeout=36500000
+</VirtualHost>
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    ServerName mailhog.local.com
+    ProxyRequests Off
+    <Proxy *>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+    ProxyPreservehost on
+    ProxyPass / http://mailhog:8025/
+</VirtualHost>
+

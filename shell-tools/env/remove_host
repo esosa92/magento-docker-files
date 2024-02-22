@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+echo -e "Enter a domain name - e.g. site.local.com - that will be removed from /etc/hosts"
+read -r domain
+/bin/bash "$repo_root/shell-tools/env/remove_host_without_read" "${domain}"

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+database_compose_dir="$repo_root/database-compose"
+env_tmp_path="$repo_root/.env.tmp"
+templates_dir="$repo_root/shell-tools/templates"
+
+mkdir -p "$database_compose_dir/mariadb10.4/data" >/dev/null
+mkdir -p "$database_compose_dir/mariadb10.4/dbscripts" >/dev/null
+touch "$env_tmp_path" >/dev/null
+echo ROOT_PASSWORD=root >>"$env_tmp_path"
+echo HOST_PORT_BINDING=1004 >>"$env_tmp_path"
+cp -n "$env_tmp_path" "$database_compose_dir/mariadb10.4/.env"
+rm "$env_tmp_path"
+
+mkdir -p "$database_compose_dir/mariadb10.4/conf"
+cp -n \
+  "$templates_dir/my.cnf.template" \
+  "$database_compose_dir/mariadb10.4/conf/my.cnf"

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+build_logs_dir=$2
+php_image_dir="$repo_root/php"
+
+# shellcheck source=../common/functions
+source "$repo_root/shell-tools/common/functions"
+
+#Build all php images
+for dir in "$php_image_dir"/*
+do
+  phpVer=$(basename "$dir")
+  build_and_log "$dir" "$build_logs_dir/$phpVer.log"
+done

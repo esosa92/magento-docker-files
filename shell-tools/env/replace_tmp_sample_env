@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+project_name=$2
+git_repo_path=$3
+host_port=$4
+shell_tools_dir="$repo_root/shell-tools"
+env_shells_path="$shell_tools_dir/env"
+
+source "$shell_tools_dir/common/functions"
+sample_env_path="$shell_tools_dir/templates/env-template"
+sample_env_copy_path="$shell_tools_dir/templates/tmp"
+sample_env_docker_compose="$sample_env_copy_path/docker-compose.yml"
+sample_m2_env_path="$sample_env_copy_path/env.php"
+
+#Constant strings for replacing
+CONST_WEB_SERVER_SERVICE_NAME="__web__server_service_name__"
+CONST_WEB_SERVER_CONTAINER_NAME="__web__server__container__name__"
+CONST_WEB_SERVER_WEB_ALIAS_DOMAIN_ENV_VALUE="__web___alias___domain__"
+CONST_WEB_SERVER_VOLUME_PUB="__web_server_volume_host_path__"
+CONST_PHP_CONTAINER_NAME="__php__service__container__name"
+CONST_PHP_SERVICE_VOLUME_HOST_PATH="__php_service_volume_host_path__"
+CONST_DATABASE_SERVICE_CONTAINER_NAME="__database___container___name"
+CONST_DATABASE_SERVICE_DB_NAME="__db_name__"
+CONST_DATABASE_SERVICE_HOST_PORT="__db_host_port"
+CONST_REDIS_SERVICE_CONTAINER_NAME="__redis__container__name"
+CONST_ES_SERVICE_CONTAINER_NAME="__es_container_name"
+CONST_RABBIT_SERVICE_CONTAINER_NAME="__rabbit_container_name"
+CONST_M2_PHP_DATABASE_NAME="__db_name"
+
+if ! cp -r "$sample_env_path" "$sample_env_copy_path"; then
+  echo "Error when copying files, aborting"
+  exit 0
+fi
+
+default_domain="${project_name}.local.com"
+
+replace_string_in_file "$sample_env_docker_compose" "$CONST_WEB_SERVER_VOLUME_PUB" "$git_repo_path/pub"
+replace_string_in_file "$sample_env_docker_compose" "$CONST_WEB_SERVER_SERVICE_NAME" "${project_name}_web"
+replace_string_in_file "$sample_env_docker_compose" "$CONST_WEB_SERVER_CONTAINER_NAME" "${project_name}_web"
+replace_string_in_file "$sample_env_docker_compose" "$CONST_WEB_SERVER_WEB_ALIAS_DOMAIN_ENV_VALUE" "$default_domain"
+replace_string_in_file "$sample_env_docker_compose" "$CONST_PHP_CONTAINER_NAME" "${project_name}_php"
+replace_string_in_file "$sample_env_docker_compose" "$CONST_PHP_SERVICE_VOLUME_HOST_PATH" "$git_repo_path"
+replace_string_in_file "$sample_env_docker_compose" "$CONST_DATABASE_SERVICE_CONTAINER_NAME" "${project_name}_database"
+replace_string_in_file "$sample_env_docker_compose" "$CONST_DATABASE_SERVICE_DB_NAME" "$project_name"
+replace_string_in_file "$sample_env_docker_compose" "$CONST_DATABASE_SERVICE_HOST_PORT" "$host_port"
+replace_string_in_file "$sample_env_docker_compose" "$CONST_REDIS_SERVICE_CONTAINER_NAME" "${project_name}_redis"
+replace_string_in_file "$sample_env_docker_compose" "$CONST_ES_SERVICE_CONTAINER_NAME" "${project_name}_elastic"
+replace_string_in_file "$sample_env_docker_compose" "$CONST_RABBIT_SERVICE_CONTAINER_NAME" "${project_name}_rabbit"
+replace_string_in_file "$sample_m2_env_path" "$CONST_M2_PHP_DATABASE_NAME" "$project_name"
+
+bash "$env_shells_path/add_vhost" "$repo_root" "$project_name"
+
+bash "$env_shells_path/add_host_without_read" "$repo_root" "$default_domain" >/dev/null

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+domain=$2
+env_tools_dir="$repo_root/shell-tools/env"
+stacks_dir="$repo_root/docker-stacks"
+found=$(grep "${domain}" "/etc/hosts")
+
+if [ -n "$found" ]; then
+  exit 0
+fi
+
+/bin/bash "$env_tools_dir/remove_host_without_read" "${domain}" >/dev/null
+touch "$stacks_dir/domains_added.log"
+printf "127.0.0.1 %s \n" "${domain}" |
+  sudo tee -a /etc/hosts |
+  tee -a "$stacks_dir/domains_added.log" >/dev/null
+echo -e "Added $domain to /etc/hosts"

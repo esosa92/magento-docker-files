@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+current_dir=$(dirname $(realpath -s "$0"))
+
+bash "$current_dir/install_brew"
+#dependencies require brew
+bash "$current_dir/install_bash"
+bash "$current_dir/install_mkcert"
+bash "$current_dir/install_fzf"
+bash "$current_dir/install_gnu_sed"
+bash "$current_dir/install_core_utils"

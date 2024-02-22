@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+current_dir=$(dirname "$(realpath -s "$0")")
+
+bash "$current_dir/install_docker"
+bash "$current_dir/install_fzf"
+bash "$current_dir/install_brew_mkcert"
+
+

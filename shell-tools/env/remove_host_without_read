@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+domain=$1
+sudo sed "/127.0.0.1 ${domain}/d" /etc/hosts |
+  sudo tee /etc/hosts.tmp >/dev/null
+sudo mv /etc/hosts.tmp /etc/hosts
+echo "Removed ${domain} from /etc/hosts"

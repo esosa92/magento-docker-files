@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+templates_dir="$repo_root/shell-tools/templates"
+env_template_dir="$templates_dir/env-template"
+
+mkdir -p "$env_template_dir/data"
+mkdir -p "$env_template_dir/dbscripts"
+mkdir -p "$env_template_dir/conf"
+
+cp -n "$templates_dir/my.cnf.template" "$env_template_dir/conf/my.cnf"

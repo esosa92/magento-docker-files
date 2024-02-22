@@ -1,0 +1,69 @@
+#!/bin/bash
+
+SCRIPT_ABS_PATH=$(dirname $(realpath -s "$0"))
+read -r -p "Enter the path to your pub key[~/.ssh/id_rsa.pub]: " PUB_KEY_PATH
+PUB_KEY_PATH=${PUB_KEY_PATH:-~/.ssh/id_rsa.pub}
+
+if [ ! -f "$PUB_KEY_PATH" ]; then
+  echo "Invalid file aborting"
+  exit 0
+fi
+
+read -r -p "Do you have a preconfigured server in ~/.ssh/config y/n?[n]: " IS_CONFIGURED
+IS_CONFIGURED=${IS_CONFIGURED:-n}
+
+if [ "$IS_CONFIGURED" = "y" ]; then
+  IS_CONFIGURED=true
+else
+  IS_CONFIGURED=false
+fi
+
+if [ "$IS_CONFIGURED" = true ]; then
+  read -r -p "Enter the address configured in your ~/.ssh/config: " HOST_ADDRESS
+else
+  read -r -p "Enter the user: " HOST_USER
+  if [ -z $HOST_USER ]; then
+    echo "enter an user aborting"
+    exit 0
+  fi
+  read -r -p "Enter the ip of the remote server: " HOST_ADDRESS
+  if [ -z $HOST_ADDRESS ]; then
+    echo "enter an ip"
+    exit 0
+  fi
+  echo "This will most likely be used for lexicon and the default port there is 2727"
+  read -r -p "Enter the port[2727]: " HOST_PORT
+  HOST_PORT=${HOST_PORT:-2727}
+fi
+
+if [ "$IS_CONFIGURED" = true ]; then
+  ssh-copy-id -i "$PUB_KEY_PATH" "$HOST_ADDRESS"
+else
+  ssh-copy-id -i "$PUB_KEY_PATH" -p "$HOST_PORT" "$HOST_USER@$HOST_ADDRESS"
+fi
+
+if [ $IS_CONFIGURED = false ]; then
+  read -r -p "Do you want to add this configuration to your ~/.ssh/config y/n?[n]: " SHOULD_ADD
+fi
+
+SHOULD_ADD=${SHOULD_ADD:-n}
+
+if [ "$SHOULD_ADD" = "y" ]; then
+  SHOULD_ADD=true
+else
+  SHOULD_ADD=false
+fi
+
+if [ "$SHOULD_ADD" = false ]; then
+  echo "exiting"
+  exit 0
+fi
+
+read -r -p "Please enter a name for you config: " HOST_NAME
+
+if [ -z $HOST_NAME ]; then
+  echo "Enter a name, aborting"
+  exit 0
+fi
+
+/bin/bash "$SCRIPT_ABS_PATH/add_ssh_host_config.sh" -n "$HOST_NAME" -a "$HOST_ADDRESS" -p "$HOST_PORT" -u "$HOST_USER"

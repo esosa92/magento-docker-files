@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# shellcheck source=../common/functions
+source "$DOCKER_FILES_COMMON_FUNCTIONS"
+
+if platform::is_macos; then
+  mkcert "*.local.com"
+else
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  mkcert "*.local.com"
+fi

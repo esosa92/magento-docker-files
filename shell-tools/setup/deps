@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+current_dir=$(dirname $(realpath -s "$0"))
+
+# shellcheck source=../common/functions
+source "$DOCKER_FILES_COMMON_FUNCTIONS"
+
+if platform::is_macos; then
+  bash "$repo_root/shell-tools/setup/mac/deps"
+else
+  bash "$repo_root/shell-tools/setup/linux/deps"
+fi
+
+bash "$current_dir/generate_certs"

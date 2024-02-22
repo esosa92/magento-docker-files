@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+FILE_PATH=""
+SEARCH_STRING=""
+REPLACE_STRING=""
+while getopts 'f:s:r:' OPT; do
+  case $OPT in
+  f) FILE_PATH=$OPTARG ;;
+  s) SEARCH_STRING=$OPTARG ;;
+  r) REPLACE_STRING=$OPTARG ;;
+  *) ;;
+  esac
+done
+
+if [ -z "$FILE_PATH" ]; then
+  echo "set the -f flag with a valid filename, aborting"
+  exit 0
+fi
+
+if [ -z "$SEARCH_STRING" ]; then
+  echo "set the -s flag with a valid string to search, aborting"
+  exit 0
+fi
+
+if [ -z "$REPLACE_STRING" ]; then
+  echo "set the -r flag with a valid string to replace, aborting"
+  exit 0
+fi
+
+if [ ! -f $FILE_PATH ]; then
+  echo "the file is invalid aborting"
+  exit 0
+fi
+
+sed "s@$SEARCH_STRING@$REPLACE_STRING@" "$FILE_PATH" |
+  tee "$FILE_PATH.tmp" >/dev/null
+mv "$FILE_PATH.tmp" "$FILE_PATH"

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+project_stack_dir=$2
+git_repo_path=$3
+tmp_path="$repo_root/shell-tools/templates/tmp"
+docker_stacks_dir="$repo_root/docker-stacks"
+
+mkdir -p "$docker_stacks_dir"
+
+mv "$tmp_path" "$docker_stacks_dir"
+mv "$docker_stacks_dir/tmp" "$project_stack_dir"
+cp -nr "$project_stack_dir/env.php" "$git_repo_path/app/etc"
+rm -rf "$tmp_path"

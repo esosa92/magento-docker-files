@@ -1,0 +1,78 @@
+##Sample docker file, for copying and modifying
+version: "3"
+services:
+    __web__server_service_name__:
+        container_name: __web__server__container__name__
+        image: nginx-magento:latest
+        environment:
+            - WEB_ALIAS_DOMAIN=__web___alias___domain__
+            - RUN_MODE=developer #puts site in dev mode on a server level, you can still use the command to change the mode inside the PHP container
+            - RUN_TYPE=store #you change the site type to website
+            - RUN_CODE=default #store or website code, the code depends on the option above
+            - PHP_SERVICE_NAME=php
+            - PHP_SERVICE_PORT=9000
+        volumes:
+            - __web_server_volume_host_path__:/usr/share/nginx/html/pub
+        depends_on:
+            - php
+        networks:
+            - default #name of the default network that when using this docker-compose
+            - reverse-proxy-apache_default
+
+    php:
+        image: php-magento:7.4-composer-1
+        container_name: __php__service__container__name
+        environment:
+            - COMPOSER_MEMORY_LIMIT=-1
+            - XDEBUG_MODE=off
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        volumes:
+            - __php_service_volume_host_path__:/usr/share/nginx/html/
+        networks:
+            - default
+            - reverse-proxy-apache_default #so PHP can access mailhog
+
+    ##If you have the DB centralized in some other docker-compose.yml, this isn't needed
+    database:
+        image: mariadb-custom:10.4 #This may change depending on the version of magento you are using
+        container_name: __database___container___name
+        environment:
+            MYSQL_DATABASE: __db_name__
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - ./data/mysql:/var/lib/mysql
+            - ./dbscripts:/dbscripts
+            #-./conf/mysql.conf:/etc/mysql/my.cnf
+            #Comment above to enable database personalization
+        ports:
+            - "__db_host_port:3306"
+
+    redis:
+        image: redis:latest
+        container_name: __redis__container__name
+        volumes:
+            - ./data/redis:/data
+
+    elasticsearch:
+        image: elasticsearch:7.17.3
+        container_name: __es_container_name
+        deploy:
+            resources:
+                limits:
+                    cpus: '2'
+                    memory: '1000M'
+                reservations:
+                    cpus: '1'
+                    memory: '1000M'
+        environment:
+            - "discovery.type=single-node"
+
+#By default rabbit is commented, you can uncomment
+#    rabbitmq:
+#        container_name: __rabbit_container_name
+#        image: rabbitmq
+
+networks:
+    reverse-proxy-apache_default: #if you use reverse proxy
+        external: true

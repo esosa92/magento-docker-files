@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+project_name=$2
+path_to_vhosts="$repo_root/reverse-proxy-apache/my-vhost.conf"
+templates_dir="$repo_root/shell-tools/templates"
+
+found=$(grep "${project_name}_web" "$path_to_vhosts")
+
+if [ -n "$found" ]; then
+    echo "vhost already added, skipping"
+    exit 0
+fi
+
+sed "s/__domain__/${project_name}.local.com/" "$templates_dir/vhost.conf.template" |
+  sed "s/__service_name__/${project_name}_web/" |
+  tee -a "$path_to_vhosts" >/dev/null
+echo "vhost added for ${project_name}.local.com"

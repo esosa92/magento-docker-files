@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+read -r -p "Enter the docker project name to add a vhost: " project_name
+
+if [ -z "$project_name" ]; then
+  echo "Please enter a project name, aborting"
+  exit 0
+fi
+
+/bin/bash "$repo_root/shell-tools/env/add_vhost" "$project_name"

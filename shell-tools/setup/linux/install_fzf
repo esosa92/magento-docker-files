@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if ! command -v fzf >/dev/null; then
+  echo "Installing fzf"
+  sudo apt -y install fzf
+else
+  echo "fzf already installed, skipping..."
+fi

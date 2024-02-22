@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+
+echo -e "Enter a domain name - e.g. site.local.com - to be added to the hosts file:"
+read -r domain
+/bin/bash "$repo_root/shell-tools/env/add_host_without_read" "$repo_root" "${domain}"

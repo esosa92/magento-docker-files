@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+repo_root=$1
+current_dir=$(dirname $(realpath -s "$0"))
+shell_tools_dir="$repo_root/shell-tools"
+build_dir="$shell_tools_dir/build"
+build_logs_dir="$build_dir/build_logs"
+
+source "$shell_tools_dir/common/functions"
+
+mkdir -p "$build_logs_dir"
+build_and_log "$repo_root/common" "$build_logs_dir/common.log"
+build_and_log "$repo_root/nginx/old" "$build_logs_dir/nginx_old.log"
+build_and_log "$repo_root/nginx/new" "$build_logs_dir/nginx_new.log"
+build_and_log "$repo_root/mariadb/10.4" "$build_logs_dir/mariadb_custom_10.4.log"
+
+if platform::is_arm; then
+  bash "$current_dir/build_arm" "$repo_root" "$build_logs_dir"
+else
+  bash "$current_dir/build" "$repo_root" "$build_logs_dir"
+fi

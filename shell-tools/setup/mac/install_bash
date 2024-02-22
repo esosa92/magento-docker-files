@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+brew install bash
+brew_bash_path="$(brew --prefix)/bin/bash"
+echo "PATH=$brew_bash_path:\$PATH" >>"$HOME/.bashrc"
+source "$HOME/.bashrc"
