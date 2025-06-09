@@ -1,9 +1,9 @@
 FROM mariadb:10.4
-RUN apt update  \
-    && apt install -y pv \
-    && apt install -y make \
-    && apt install -y fzf \
-    && apt install -y iputils-ping
+RUN apt update -y
+    #&& apt install --fix-missing -y pv \
+#    && apt install --fix-missing -y make \
+#    && apt install --fix-missing -y fzf \
+#    && apt install --fix-missing -y iputils-ping
 ARG UID
 
 COPY --from=common:latest /add_app_user.sh .
