@@ -1,0 +1,10 @@
+services:
+  nginx:
+    image: nginx
+    container_name: reverse_proxy_nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./default.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro

@@ -10,7 +10,7 @@ services:
             - ./certs:/usr/local/apache2/conf/certs
             - ./mySsl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf
             - ./restart.sh:/restart.sh
-        restart: unless-stopped
+        restart: always
         ports:
             - "80:80"
             - "443:443"
